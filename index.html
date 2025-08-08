@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Moul&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Battambang&family=Moul&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<title>ពិន្ទុថ្នាក់ទី៧B</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f6fa;
+        margin: 0;
+        font-family: "Battambang", system-ui;
+    }
+    header {
+        position: sticky;
+        top: 0;
+        background: white;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 10;
+        font-family: "Battambang", system-ui;
+    }
+    .container {
+        display: flex;
+        gap: 20px;
+        padding: 15px;
+        font-family: "Battambang", system-ui;
+    }
+    .panel {
+        background: white;
+        border-radius: 10px;
+        padding: 0;
+        flex: 1;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 80px);
+        
+    }
+    .student-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        padding: 10px;
+        z-index: 5;
+        border-bottom: 1px solid #ddd;
+        font-family: "Battambang", system-ui;
+        display: flex;
+    }
+    .student-list {
+        height: 20px;
+        overflow-y: auto;
+        flex: 1;
+        padding: 5px;
+       
+    }
+    .student-item {
+        
+         display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 10px;
+      border-bottom: 1px solid #bbb;
+      background: #f1f1f1c2;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-family: "Battambang", system-ui;
+      
+    }
+    .btn-blue {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+         font-family: "Battambang", system-ui;
+    }
+    .btn-gray {
+        background: #e0e0e0;
+        border: none;
+        padding: 5px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+         font-size: 1rem;
+         color: #007bff;
+          font-family: "Battambang", system-ui;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      background-color: rgb(19, 80, 54);
+      color: white;
+    }
+    .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+    }
+    .score-box {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    input[type="number"], input[type="text"], select {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: "Battambang", system-ui;
+        font-size: 1rem;
+    }
+    @media(max-width: 768px) {
+        .container { flex-direction: column; }
+        header { flex-wrap: wrap; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h3 style="margin:0;">ពិន្ទុថ្នាក់ទី៧B</h3>
+    <label>
+        <select id="monthSelect">
+            <option>មករា</option><option>February</option><option>March</option>
+            <option>April</option><option>May</option><option>June</option>
+            <option>July</option><option>August</option><option>September</option>
+            <option>October</option><option>November</option><option>December</option>
+        </select>
+    </label>
+    <label>
+        <select id="subjectQuick"></select>
+    </label>
+    <input type="number" id="quickScore" placeholder="​ ពិន្ទុ" style="width:70px;">
+    <button class="btn-blue" id="applyQuick">រក្សាទុក</button>
+    <button class="btn-blue" id="applyQuick">ស្រង់អវត្តមាន</button>
+</header>
+
+<div class="container">
+    <!-- Student List -->
+    <div class="panel" style="flex:1;">
+        <div class="student-header">
+            <input type="text" id="searchName" placeholder="ស្វែងរកឈ្មោះសិស្ស..." style="margin-bottom:5px;">
+           <button class="btn-blue" id="reloadBtn" style="margin-top:5px;">Reload</button>
+        </div>
+        <div id="studentList" class="student-list"></div>
+    </div>
+
+    <!-- Score Editor -->
+    <div class="panel">
+        <div style="padding: 15px; flex: 1; overflow-y: auto;">
+            <h4 id="selectedStudent">មិនទាន់បានជ្រើសរើសសិស្ស</h4>
+            <div id="scoresGrid" class="score-grid"></div>
+        </div>
+        <div style="padding: 15px; border-top: 1px solid #ddd;">
+            <button class="btn-blue" id="saveBtn">រក្សាទុក</button>
+            <button class="btn-gray" id="resetBtn">សម្អាត</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbzanw4NceLnSPa8FpWdE7JCPurY_-8qFxbIrezCzvLTiNt02sQadHEIXR-Y540faTRq8g/exec';
+
+// 13 subjects
+const SUBJECTS = [
+    "អង់គ្លេស", "Khmer", "Math", "Science", "History",
+    "Physics", "Chemistry", "Biology", "Geography",
+    "Civics", "Art", "PE", "IT"
+];
+
+let currentStudent = null;
+let scores = {};
+const monthSelect = document.getElementById('monthSelect');
+
+function loadStudents() {
+    document.getElementById('studentList').innerHTML = '';
+    fetch(`${SHEET_API_BASE}?action=getStudents&month=${monthSelect.value}`)
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(name => {
+                let div = document.createElement('div');
+                div.className = 'student-item';
+                div.innerHTML = `<span>${name}</span><button class="btn-gray">បញ្ចូលពិន្ទុ</button>`;
+                div.querySelector('button').onclick = () => selectStudent(name);
+                document.getElementById('studentList').appendChild(div);
+            });
+        });
+}
+
+monthSelect.onchange = () => {
+    loadStudents();
+    document.getElementById('selectedStudent').textContent = 'No student selected';
+    currentStudent = null;
+    scores = {};
+    renderScores();
+};
+
+function selectStudent(name) {
+    currentStudent = name;
+    document.getElementById('selectedStudent').textContent = name;
+    scores = {};
+    
+    // Clear quick score box when selecting another student
+    document.getElementById('quickScore').value = '';
+    
+    renderScores();
+    fetch(`${SHEET_API_BASE}?action=getScores&month=${monthSelect.value}&studentName=${encodeURIComponent(name)}`)
+        .then(res => res.json())
+        .then(data => {
+            scores = data.scores || {};
+            renderScores();
+        });
+}
+
+
+function renderScores() {
+    let grid = document.getElementById('scoresGrid');
+    grid.innerHTML = '';
+    SUBJECTS.forEach(sub => {
+        let div = document.createElement('div');
+        div.className = 'score-box';
+        div.innerHTML = `<label>${sub}</label><input type="number" value="${scores[sub] || ''}">`;
+        div.querySelector('input').oninput = e => scores[sub] = e.target.value;
+        grid.appendChild(div);
+    });
+}
+
+
+function saveToSheet() {
+    const btn = document.getElementById('saveBtn');
+    const btnr = document.getElementById('applyQuick');
+
+    if (!currentStudent) {
+        btn.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
+        btnr.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
+        btn.style.backgroundColor = '#e74c3c'; // red
+         btnr.style.backgroundColor = '#e74c3c'; // red
+         
+        setTimeout(() => {
+            btn.textContent = 'រក្សាទុក';
+            btn.style.backgroundColor = ''; // reset
+             btnr.textContent = 'រក្សាទុក';
+            btnr.style.backgroundColor = ''; // reset
+        }, 1500);
+        return;
+    }
+        document.getElementById('quickScore').value = '';
+    // Instant save feedback
+    btn.textContent = 'រក្សាទុក';
+    btn.disabled = true;
+
+    // Send to Google Sheet in background
+    fetch(`${SHEET_API_BASE}?action=saveScores&month=${monthSelect.value}`, {
+        method: 'POST',
+        body: JSON.stringify({ studentName: currentStudent, scores })
+    }).catch(() => {
+        console.error('Save failed');
+    });
+
+    // Reset button quickly
+    setTimeout(() => {
+        btn.textContent = 'រក្សាទុក';
+        btn.disabled = false;
+    }, 500);
+}
+
+
+
+document.getElementById('applyQuick').onclick = () => {
+    let sub = document.getElementById('subjectQuick').value;
+    let val = document.getElementById('quickScore').value;
+    scores[sub] = val;
+    renderScores();
+    saveToSheet(); // Auto save after quick score entry
+};
+
+document.getElementById('saveBtn').onclick = saveToSheet;
+
+document.getElementById('resetBtn').onclick = () => {
+    scores = {};
+    renderScores();
+};
+
+document.getElementById('reloadBtn').onclick = loadStudents;
+
+document.getElementById('searchName').oninput = e => {
+    let term = e.target.value.toLowerCase();
+    [...document.getElementById('studentList').children].forEach(div => {
+        div.style.display = div.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+};
+
+// Fill quick subject dropdown
+const subjectQuickSelect = document.getElementById('subjectQuick');
+subjectQuickSelect.innerHTML = SUBJECTS.map(s => `<option>${s}</option>`).join("");
+
+loadStudents();
+renderScores();
+</script>
+</body>
+</html>
