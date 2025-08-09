@@ -175,12 +175,13 @@ button a:hover{
         <div style="padding: 15px; border-top: 1px solid #ddd;">
             <button class="btn-blue" id="saveBtn">រក្សាទុក</button>
             <button class="btn-gray" id="resetBtn">សម្អាត</button>
+            <span id="saveStatus" style="margin-left:10px;color:green;font-weight:bold;"></span>
         </div>
     </div>
 </div>
 
 <script>
-const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbzanw4NceLnSPa8FpWdE7JCPurY_-8qFxbIrezCzvLTiNt02sQadHEIXR-Y540faTRq8g/exec';
+const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbxGh6iBj9txPTvZ-uDlC3oEq_AK9yO7gkIoYXZXMwP83hMCpCP7Fj4WKSoPwc-u3djk/exec';
 
 // 13 subjects
 const SUBJECTS = [
@@ -251,6 +252,7 @@ function renderScores() {
 function saveToSheet() {
     const btn = document.getElementById('saveBtn');
     const btnr = document.getElementById('applyQuick');
+    const statusMsg = document.getElementById('saveStatus');
 
     if (!currentStudent) {
         btn.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
@@ -263,9 +265,18 @@ function saveToSheet() {
             btn.style.backgroundColor = ''; // reset
              btnr.textContent = 'រក្សាទុក';
             btnr.style.backgroundColor = ''; // reset
+           
         }, 1500);
         return;
     }
+       btn.disabled = true;
+    statusMsg.style.color = 'green';
+    statusMsg.textContent = 'Saved successfully!';
+    
+      setTimeout(() => {
+        btn.disabled = false;
+        statusMsg.textContent = '';
+    }, 1500);
         document.getElementById('quickScore').value = '';
     // Instant save feedback
     btn.textContent = 'រក្សាទុក';
