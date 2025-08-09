@@ -26,6 +26,7 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         z-index: 10;
         font-family: "Battambang", system-ui;
+        
     }
     .container {
         display: flex;
@@ -99,6 +100,14 @@
       background-color: rgb(19, 80, 54);
       color: white;
     }
+
+    button a{
+   color: #007bff;;
+  text-decoration: none;
+}
+button a:hover{
+    color: #f5f6fa;
+}
     .score-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -130,18 +139,21 @@
     <h3 style="margin:0;">ពិន្ទុថ្នាក់ទី៧B</h3>
     <label>
         <select id="monthSelect">
-            <option>មករា</option><option>February</option><option>March</option>
-            <option>April</option><option>May</option><option>June</option>
-            <option>July</option><option>August</option><option>September</option>
-            <option>October</option><option>November</option><option>December</option>
+           
+            <option>វិច្ឆិកា</option><option>ធ្នូ</option><option>មករា</option>
+            <option>កុម្ភៈ</option><option>មីនា</option><option>ឆមាសទី១</option>
+            <option>ឧសភា</option><option>មិថុនា</option><option>កក្កដា</option>
+            <option>ឆមាស២</option>
         </select>
     </label>
     <label>
         <select id="subjectQuick"></select>
     </label>
     <input type="number" id="quickScore" placeholder="​ ពិន្ទុ" style="width:70px;">
-    <button class="btn-blue" id="applyQuick">រក្សាទុក</button>
-    <button class="btn-blue" id="applyQuick">ស្រង់អវត្តមាន</button>
+     <h4 id="selectedStudenth" style="padding: 10px; margin-top: -5px; margin-bottom: -5px; overflow-y: auto;"></h4>
+    <button class="btn-blue" id="applyQuick" >រក្សាទុក</button>
+   
+    <button class="btn-gray" id="applyQuick"><a href="https://edu-kh.github.io/student-attendant/">ស្រង់អវត្តមាន</a></button>
 </header>
 
 <div class="container">
@@ -172,9 +184,9 @@ const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbzanw4NceLnSPa8F
 
 // 13 subjects
 const SUBJECTS = [
-    "អង់គ្លេស", "Khmer", "Math", "Science", "History",
-    "Physics", "Chemistry", "Biology", "Geography",
-    "Civics", "Art", "PE", "IT"
+  "តែងសេចក្ដី", "តាមអាន", "សីលធម៌", "ប្រវត្តិវិទ្យា", "ភូមិវិទ្យា",
+    "គណិតវិទ្យា", "រូបវិទ្យា", "គីមីវិទ្យា", "ផែនដីវិទ្យា",
+    "អង់គ្លេស", "គេហ", "បារាំង", "កីឡា", "កីឡា","បំណិន", "សុខភាព", "ចិន", "កុំព្យូទ័រ"
 ];
 
 let currentStudent = null;
@@ -189,7 +201,7 @@ function loadStudents() {
             data.forEach(name => {
                 let div = document.createElement('div');
                 div.className = 'student-item';
-                div.innerHTML = `<span>${name}</span><button class="btn-gray">បញ្ចូលពិន្ទុ</button>`;
+                div.innerHTML = `<span>${name}</span><button class="btn-gray">ជ្រើសរើសសិស្ស</button>`;
                 div.querySelector('button').onclick = () => selectStudent(name);
                 document.getElementById('studentList').appendChild(div);
             });
@@ -198,7 +210,7 @@ function loadStudents() {
 
 monthSelect.onchange = () => {
     loadStudents();
-    document.getElementById('selectedStudent').textContent = 'No student selected';
+    document.getElementById('selectedStudent').textContent = 'មិនទាន់ជ្រើសរើសសិស្ស';
     currentStudent = null;
     scores = {};
     renderScores();
@@ -206,6 +218,7 @@ monthSelect.onchange = () => {
 
 function selectStudent(name) {
     currentStudent = name;
+    document.getElementById('selectedStudenth').textContent = name;
     document.getElementById('selectedStudent').textContent = name;
     scores = {};
     
