@@ -154,6 +154,7 @@ button a:hover{
     <button class="btn-blue" id="applyQuick" >រក្សាទុក</button>
    
     <button class="btn-gray" id="applyQuick"><a href="https://edu-kh.github.io/student-attendant/">ស្រង់អវត្តមាន</a></button>
+    <span id="saveStatush" style="margin-left:10px;color:green;font-weight:bold;"></span>
 </header>
 
 <div class="container">
@@ -253,6 +254,7 @@ function saveToSheet() {
     const btn = document.getElementById('saveBtn');
     const btnr = document.getElementById('applyQuick');
     const statusMsg = document.getElementById('saveStatus');
+      const statusMsgh = document.getElementById('saveStatush');
 
     if (!currentStudent) {
         btn.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
@@ -271,11 +273,14 @@ function saveToSheet() {
     }
        btn.disabled = true;
     statusMsg.style.color = 'green';
-    statusMsg.textContent = 'Saved successfully!';
-    
+    statusMsg.textContent = 'រក្សាទុករួចរាល់';
+    statusMsgh.style.color = 'green';
+    statusMsgh.textContent = 'រក្សាទុករួចរាល់';
+
       setTimeout(() => {
         btn.disabled = false;
         statusMsg.textContent = '';
+         statusMsgh.textContent = '';
     }, 1500);
         document.getElementById('quickScore').value = '';
     // Instant save feedback
@@ -332,4 +337,3 @@ renderScores();
 </script>
 </body>
 </html>
-
