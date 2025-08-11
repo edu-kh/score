@@ -133,8 +133,9 @@ button a:hover{
         .container { flex-direction: column; }
         header { flex-wrap: wrap; }
     }
+    
 </style>
-</head>
+</head> 
 <body>
 
 <header>
@@ -151,9 +152,11 @@ button a:hover{
     <label>
         <select id="subjectQuick"></select>
     </label>
-    <input type="number" id="quickScore" placeholder="​ ពិន្ទុ" style="width:60px;">
-     <h4 id="selectedStudenth" style="padding: 10px 5px; margin-top: -5px; margin-bottom: -5px; overflow-y: auto;"></h4>
-    <button class="btn-blue" id="applyQuick" >រក្សាទុក</button>
+    <!--<input type="number" id="quickScore" placeholder="​ ពិន្ទុ" style="width:60px;"> -->
+   <!-- <h4 id="selectedStudenth" style="padding: 10px 5px; margin-top: -5px; margin-bottom: -5px; overflow-y: auto;"></h4>--> 
+     <button class="btn-blue" id="saveListScores">រក្សាទុកពិន្ទុ</button>
+
+    <!--<button class="btn-blue" id="applyQuick" >រក្សាទុក</button>-->
    
     <button class="btn-gray" id="applyQuick"><a href="https://edu-kh.github.io/student-attendant/">ស្រង់អវត្តមាន</a></button>
     <span id="saveStatush" style="margin-left:10px;color:green;font-weight:bold;"></span>
@@ -184,7 +187,7 @@ button a:hover{
 </div>
 
 <script>
-const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbxjf3HE2yhO_X1iZ5h1T2YLdHNZ-zWkL3qSy7AI6lQ4rY_VIXTKfm2d22P75INsZyfX8A/exec';
+const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbxTteDTUv5Dn_4FpBNtXFIrEtpZZmkQE6BNDrNW7uhvHgWTjgbtxkL8b52vGnDaGIi_1w/exec';
 
 // 13 subjects
 const SUBJECTS = [
@@ -197,20 +200,106 @@ let currentStudent = null;
 let scores = {};
 const monthSelect = document.getElementById('monthSelect');
 
+let listScores = {};
+
 function loadStudents() {
     document.getElementById('studentList').innerHTML = '';
+    listScores = {};
+
     fetch(`${SHEET_API_BASE}?action=getStudents&month=${monthSelect.value}`)
         .then(res => res.json())
         .then(data => {
             data.forEach(name => {
                 let div = document.createElement('div');
                 div.className = 'student-item';
-                div.innerHTML = `<span>${name}</span><button class="btn-gray " active>ជ្រើសរើសសិស្ស</button>`;
+                div.innerHTML = `
+                    <span style="flex:1;">${name}</span>
+                    <input type="number" class="student-score" placeholder="ពិន្ទុ" style="width:60px; margin-right:5px;">
+                    <button class="btn-gray">ជ្រើសរើស</button>
+                `;
+
+                // Select student for right panel
                 div.querySelector('button').onclick = () => selectStudent(name);
+
+                // Track score entry
+                div.querySelector('.student-score').oninput = e => {
+                    listScores[name] = e.target.value;
+                };
+
                 document.getElementById('studentList').appendChild(div);
             });
         });
 }
+
+
+async function saveListScoresMerged() {
+    const statusMsg = document.getElementById('saveStatush');
+    statusMsg.style.color = 'blue';
+    statusMsg.textContent = 'កំពុងរក្សាទុក....';
+
+    const selectedSubject = document.getElementById('subjectQuick').value;
+    if (!selectedSubject) {
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = '⚠ សូមជ្រើសរើសមុខវិជ្ជាមុន!';
+        return;
+    }
+
+    // Get all scores for the month once
+    let allScores = {};
+    try {
+        let res = await fetch(`${SHEET_API_BASE}?action=getAllScores&month=${monthSelect.value}`);
+        let data = await res.json();
+        allScores = data || {};
+    } catch (err) {
+        console.error("Failed to fetch all scores", err);
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = '❌ មិនអាចទាញទិន្នន័យបាន!';
+        return;
+    }
+
+    // Collect updated scores from list
+    let updatedScores = {};
+    document.querySelectorAll('.student-item').forEach(item => {
+        let studentName = item.querySelector('span').textContent.trim();
+        let scoreValue = item.querySelector('.student-score').value.trim();
+        if (scoreValue !== '') {
+            if (!allScores[studentName]) allScores[studentName] = {};
+            allScores[studentName][selectedSubject] = scoreValue;
+            updatedScores[studentName] = allScores[studentName];
+        }
+    });
+
+    if (Object.keys(updatedScores).length === 0) {
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = '⚠ មិនមានពិន្ទុសម្រាប់រក្សាទុក!';
+        return;
+    }
+
+    // Save all updates in one request
+    try {
+        await fetch(`${SHEET_API_BASE}?action=saveScoresBatch&month=${monthSelect.value}`, {
+            method: 'POST',
+            body: JSON.stringify(updatedScores)
+        });
+        statusMsg.style.color = 'green';
+        statusMsg.textContent = '✅ រក្សាទុកពិន្ទុរួចរាល់!';
+        document.querySelectorAll('.student-score').forEach(input => input.value = '');
+    } catch (err) {
+        console.error(err);
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = '❌ ការរក្សាទុកបរាជ័យ!';
+    }
+
+    setTimeout(() => statusMsg.textContent = '', 2000);
+}
+
+
+
+
+
+
+document.getElementById('saveListScores').onclick = saveListScoresMerged;
+
 
 monthSelect.onchange = () => {
     loadStudents();
@@ -221,11 +310,12 @@ monthSelect.onchange = () => {
 };
 
 function selectStudent(name) {
+    
     currentStudent = name;
     document.getElementById('selectedStudenth').textContent = name;
     document.getElementById('selectedStudent').textContent = name;
     scores = {};
-    
+   
     // Clear quick score box when selecting another student
     document.getElementById('quickScore').value = '';
     
@@ -337,7 +427,16 @@ subjectQuickSelect.innerHTML = SUBJECTS.map(s => `<option>${s}</option>`).join("
 loadStudents();
 renderScores();
 
-
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", function () {
+      // Remove active class from all buttons
+      document.querySelectorAll("button").forEach(b => b.classList.remove("active-btn"));
+      // Add active to clicked button
+      this.classList.add("active-btn");
+    });
+  });
+});
 
 </script>
 </body>
