@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <title>ពិន្ទុថ្នាក់ទី៧B</title>
 <style>
+   
     body {
         font-family: Arial, sans-serif;
         background: #f5f6fa;
@@ -100,6 +101,7 @@
       background-color: rgb(19, 80, 54);
       color: white;
     }
+     
 
     button a{
    color: #007bff;;
@@ -141,7 +143,7 @@ button a:hover{
         <select id="monthSelect">
            
             <option>វិច្ឆិកា</option><option>ធ្នូ</option><option>មករា</option>
-            <option>កុម្ភៈ</option><option>មីនា</option><option>ឆមាសទី១</option>
+            <option>កុម្ភៈ</option><option>ឆមាសទី១</option><option>មីនា</option>
             <option>ឧសភា</option><option>មិថុនា</option><option>កក្កដា</option>
             <option>ឆមាសទី២</option>
         </select>
@@ -188,7 +190,7 @@ const SHEET_API_BASE = 'https://script.google.com/macros/s/AKfycbxGh6iBj9txPTvZ-
 const SUBJECTS = [
   "តែងសេចក្ដី", "តាមអាន", "សីលធម៌", "ប្រវត្តិវិទ្យា", "ភូមិវិទ្យា",
     "គណិតវិទ្យា", "រូបវិទ្យា", "គីមីវិទ្យា", "ផែនដីវិទ្យា",
-    "អង់គ្លេស", "គេហ", "បារាំង", "កីឡា", "កីឡា","បំណិន", "សុខភាព", "ចិន", "កុំព្យូទ័រ"
+    "អង់គ្លេស", "គេហ", "បារាំង", "កីឡា","បំណិន", "សុខភាព", "ចិន", "កុំព្យូទ័រ"
 ];
 
 let currentStudent = null;
@@ -203,7 +205,7 @@ function loadStudents() {
             data.forEach(name => {
                 let div = document.createElement('div');
                 div.className = 'student-item';
-                div.innerHTML = `<span>${name}</span><button class="btn-gray">ជ្រើសរើសសិស្ស</button>`;
+                div.innerHTML = `<span>${name}</span><button class="btn-gray " active>ជ្រើសរើសសិស្ស</button>`;
                 div.querySelector('button').onclick = () => selectStudent(name);
                 document.getElementById('studentList').appendChild(div);
             });
@@ -334,6 +336,9 @@ subjectQuickSelect.innerHTML = SUBJECTS.map(s => `<option>${s}</option>`).join("
 
 loadStudents();
 renderScores();
+
+
+
 </script>
 </body>
 </html>
