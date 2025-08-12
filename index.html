@@ -153,12 +153,12 @@ button a:hover{
         <select id="subjectQuick"></select>
     </label>
     <input type="" id="quickScore" placeholder="" style="width: 0px;"> 
-   <h4 id="selectedStudenth" style="padding: 0px px; margin-top: -5px; margin-bottom: -5px; overflow-y: auto; color: #ddd; font-size: 0px;"></h4>
-     <button class="btn-blue" id="saveListScores">រក្សាទុកពិន្ទុ</button>
+   <h4 id="selectedStudenth" style="padding: 0px px; margin-top: -5px; margin-bottom: -5px; overflow-y: auto; font-size: 0px; border: none;"></h4>
+     <button class="btn-blue" id="saveListScores">រក្សាទុក</button>
 
     <!--<button class="btn-blue" id="applyQuick" >រក្សាទុក</button>-->
-   
-    <button class="btn-gray" id="applyQuick"><a href="https://edu-kh.github.io/student-attendant/">ស្រង់អវត្តមាន</a></button>
+   <span id="applyQuick"></span>
+    <button class="btn-gray" ><a href="https://edu-kh.github.io/student-attendant/">ស្រង់អវត្តមាន</a></button>
     <span id="saveStatush" style="margin-left:10px;color:green;font-weight:bold;"></span>
 </header>
 
@@ -173,16 +173,29 @@ button a:hover{
     </div>
 
     <!-- Score Editor -->
-    <div class="panel">
-        <div style="padding: 15px; flex: 1; overflow-y: auto;">
-            <h4 id="selectedStudent">មិនទាន់បានជ្រើសរើសសិស្ស</h4>
-            <div id="scoresGrid" class="score-grid"></div>
+   <div class="panel">
+    <div class="panel-top" style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #ddd;">
+        <h4 id="selectedStudent">គ្មានឈ្មោះសិស្ស</h4>
+        <div style="display:flex; gap:5px;">
+            <button class="btn-gray" id="prevStudent"><i class="fa fa-chevron-left"></i></button>
+             <div style="padding: 0px; border-top: 1px solid #ddd;">
+          
+        <button class="btn-blue" id="saveBtn">រក្សាទុក</button>
+        
+       
+    </div>
+            <button class="btn-gray" id="nextStudent"><i class="fa fa-chevron-right"></i></button>
         </div>
-        <div style="padding: 15px; border-top: 1px solid #ddd;">
-            <button class="btn-blue" id="saveBtn">រក្សាទុក</button>
-            <button class="btn-gray" id="resetBtn">សម្អាត</button>
-            <span id="saveStatus" style="margin-left:10px;color:green;font-weight:bold;"></span>
-        </div>
+        
+    </div>
+   
+    <div style="padding: 15px; flex: 1; overflow-y: auto;">
+        <div id="scoresGrid" class="score-grid"></div>
+    </div>
+    <div style="padding: 15px; border-top: 1px solid #ddd;">
+       
+        <button class="btn-gray" id="resetBtn">សម្អាត</button>
+        <span id="saveStatus" style="margin-left:10px;color:green;font-weight:bold;"></span>
     </div>
 </div>
 
@@ -230,6 +243,68 @@ function loadStudents() {
             });
         });
 }
+
+function loadStudents() {
+    const reloadBtn = document.getElementById('reloadBtn');
+    const studentListEl = document.getElementById('studentList');
+
+    // Show waiting state
+    reloadBtn.disabled = true;
+    reloadBtn.textContent = 'Loading'; // Loading...
+    studentListEl.innerHTML = '<div style="padding:10px; color:black; font-size: 1rem">កំពុងទាញឈ្មោះសិស្ស! សូមរង់ចាំ...</div>';
+
+    studentNames = [];
+    currentIndex = -1;
+
+    fetch(`${SHEET_API_BASE}?action=getStudents&month=${monthSelect.value}`)
+        .then(res => res.json())
+        .then(data => {
+            studentNames = data;
+            studentListEl.innerHTML = ''; // Clear loading text
+
+            data.forEach(name => {
+                let div = document.createElement('div');
+                div.className = 'student-item';
+                div.innerHTML = `
+                    <span style="flex:1;">${name}</span>
+                    <input type="number" class="student-score" placeholder="ពិន្ទុ" style="width:60px;">
+                    <button class="btn-gray">ជ្រើសរើស</button>
+                `;
+
+                div.querySelector('button').onclick = () => {
+                    currentIndex = studentNames.indexOf(name);
+                    selectStudent(name);
+                };
+
+                div.querySelector('.student-score').oninput = e => {
+                    listScores[name] = e.target.value;
+                };
+
+                studentListEl.appendChild(div);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            studentListEl.innerHTML = '<div style="padding:10px; color:red;">❌ មិនអាចផ្ទុកទិន្នន័យបាន</div>';
+        })
+        .finally(() => {
+            reloadBtn.disabled = false;
+            reloadBtn.textContent = 'Reload';
+        });
+}
+
+
+document.getElementById('prevStudent').onclick = () => {
+    if (!studentNames.length) return;
+    currentIndex = currentIndex > 0 ? currentIndex - 1 : studentNames.length - 1;
+    selectStudent(studentNames[currentIndex]);
+};
+
+document.getElementById('nextStudent').onclick = () => {
+    if (!studentNames.length) return;
+    currentIndex = currentIndex < studentNames.length - 1 ? currentIndex + 1 : 0;
+    selectStudent(studentNames[currentIndex]);
+};
 
 
 async function saveListScoresMerged() {
@@ -303,7 +378,7 @@ document.getElementById('saveListScores').onclick = saveListScoresMerged;
 
 monthSelect.onchange = () => {
     loadStudents();
-    document.getElementById('selectedStudent').textContent = 'មិនទាន់ជ្រើសរើសសិស្ស';
+    document.getElementById('selectedStudent').textContent = 'គ្មានឈ្មោះសិស្ស';
     currentStudent = null;
     scores = {};
     renderScores();
@@ -344,21 +419,21 @@ function renderScores() {
 
 function saveToSheet() {
     const btn = document.getElementById('saveBtn');
-    const btnr = document.getElementById('applyQuick');
+    
     const statusMsg = document.getElementById('saveStatus');
       const statusMsgh = document.getElementById('saveStatush');
 
     if (!currentStudent) {
         btn.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
-        btnr.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
+       
         btn.style.backgroundColor = '#e74c3c'; // red
-         btnr.style.backgroundColor = '#e74c3c'; // red
+         
          
         setTimeout(() => {
             btn.textContent = 'រក្សាទុក';
             btn.style.backgroundColor = ''; // reset
-             btnr.textContent = 'រក្សាទុក';
-            btnr.style.backgroundColor = ''; // reset
+             
+            
            
         }, 1500);
         return;
@@ -427,16 +502,8 @@ subjectQuickSelect.innerHTML = SUBJECTS.map(s => `<option>${s}</option>`).join("
 loadStudents();
 renderScores();
 
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", function () {
-      // Remove active class from all buttons
-      document.querySelectorAll("button").forEach(b => b.classList.remove("active-btn"));
-      // Add active to clicked button
-      this.classList.add("active-btn");
-    });
-  });
-});
+
+
 
 </script>
 </body>
