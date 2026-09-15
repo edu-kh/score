@@ -4,28 +4,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Moul&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Battambang&family=Moul&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&family=Moul&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <title>ពិន្ទុថ្នាក់ទី៧D</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f5f6fa;
-        margin: 0;
-        font-family: "Battambang", system-ui;
+    :root {
+        --primary: #6366f1;
+        --primary-2: #8b5cf6;
+        --primary-dark: #4f46e5;
+        --primary-soft: rgba(99,102,241,0.10);
+        --primary-soft-strong: rgba(99,102,241,0.18);
+        --success: #10b981;
+        --danger: #ef4444;
+        --ink: #1e2233;
+        --ink-soft: #6b7280;
+        --card: rgba(255,255,255,0.86);
+        --card-solid: #ffffff;
+        --line: rgba(15,23,42,0.08);
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --radius-sm: 8px;
+        --shadow-sm: 0 2px 10px rgba(30,34,64,0.06);
+        --shadow-md: 0 10px 30px rgba(30,34,64,0.10);
+        --shadow-lg: 0 20px 50px rgba(30,34,64,0.16);
+        --ease: cubic-bezier(.4,0,.2,1);
+        --ease-bounce: cubic-bezier(.34,1.56,.64,1);
     }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: "Battambang", "Inter", system-ui, sans-serif;
+        background:
+            radial-gradient(circle at 8% 8%, rgba(99,102,241,0.14), transparent 40%),
+            radial-gradient(circle at 92% 18%, rgba(236,72,153,0.10), transparent 42%),
+            radial-gradient(circle at 50% 100%, rgba(16,185,129,0.08), transparent 45%),
+            #f4f5fb;
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        animation: bodyIn 0.5s var(--ease);
+    }
+    @keyframes bodyIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     header {
         position: sticky;
         top: 0;
-        background: white;
-        padding: 12px 15px;
+        background: rgba(255,255,255,0.78);
+        backdrop-filter: blur(16px) saturate(160%);
+        -webkit-backdrop-filter: blur(16px) saturate(160%);
+        padding: 14px 18px;
         display: flex;
-        
         gap: 12px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-sm);
+        border-bottom: 1px solid var(--line);
         z-index: 10;
-        font-family: "Battambang", system-ui;
+        font-family: "Battambang", "Inter", system-ui;
+        transition: box-shadow .25s var(--ease);
+        animation: slideDown .4s var(--ease);
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-14px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     .header-row {
         display: flex;
@@ -41,16 +85,16 @@
     }
     .header-actions-row {
         justify-content: space-between;
-        border-top: 1px solid #f0f0f0;
-        padding-top: 8px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
     }
     .quick-score-group {
         display: flex;
-        gap: 6px;
+        gap: 8px;
         align-items: center;
     }
     #quickScore {
-        width: 80px;
+        width: 90px;
     }
     .action-buttons-group {
         display: flex;
@@ -59,30 +103,47 @@
     .container {
         display: flex;
         gap: 20px;
-        padding: 15px;
-        font-family: "Battambang", system-ui;
-
+        padding: 18px;
+        font-family: "Battambang", "Inter", system-ui;
+        max-width: 1400px;
+        margin: 0 auto;
     }
-    
+
     .panel {
-        background: white;
-        border-radius: 10px;
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
         padding: 0;
         flex: 1;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        box-shadow: var(--shadow-md);
         display: flex;
         flex-direction: column;
-        max-height: calc(100vh - 160px);
+        max-height: calc(100vh - 170px);
+        overflow: hidden;
+        animation: panelRise .45s var(--ease);
     }
-    
+    @keyframes panelRise {
+        from { opacity: 0; transform: translateY(16px) scale(.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .panel.fade-swap {
+        animation: panelSwap .38s var(--ease);
+    }
+    @keyframes panelSwap {
+        0% { opacity: 0; transform: translateY(10px) scale(.985); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     .student-header {
         position: sticky;
         top: 0;
-        background: white;
-        padding: 10px;
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(6px);
+        padding: 14px;
         z-index: 5;
-        border-bottom: 1px solid #ddd;
-        font-family: "Battambang", system-ui;
+        border-bottom: 1px solid var(--line);
+        font-family: "Battambang", "Inter", system-ui;
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
@@ -94,98 +155,180 @@
     .student-list {
         overflow-y: auto;
         flex: 1;
-        padding: 8px;
+        padding: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(99,102,241,0.35) transparent;
     }
+    .student-list::-webkit-scrollbar { width: 8px; }
+    .student-list::-webkit-scrollbar-track { background: transparent; }
+    .student-list::-webkit-scrollbar-thumb {
+        background: rgba(99,102,241,0.30);
+        border-radius: 10px;
+    }
+    .student-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(99,102,241,0.5);
+    }
+
     .student-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 6px 10px;
-        border-bottom: 1px solid #bbb;
-        background: #f1f1f1c2;
-        border-radius: 6px;
-        margin-bottom: 5px;
-        font-family: "Battambang", system-ui;
-        gap: 8px;
+        padding: 9px 12px;
+        border: 1px solid var(--line);
+        background: var(--card-solid);
+        border-radius: var(--radius-md);
+        margin-bottom: 8px;
+        font-family: "Battambang", "Inter", system-ui;
+        gap: 10px;
+        box-shadow: 0 1px 3px rgba(30,34,64,0.04);
+        transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+        animation: itemIn .38s var(--ease) both;
+        opacity: 0;
+    }
+    @keyframes itemIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .student-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+        border-color: rgba(99,102,241,0.35);
     }
     .student-item span {
         flex: 1;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        font-weight: 500;
     }
     .student-icon {
         flex: 0 0 auto;
-        width: 22px;
-        height: 22px;
+        width: 26px;
+        height: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background: #d6e9ff;
-        color: #007bff;
-        font-size: 0.75rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        color: #fff;
+        font-size: 0.72rem;
+        box-shadow: 0 3px 8px rgba(99,102,241,0.35);
+        transition: transform .2s var(--ease-bounce);
+    }
+    .student-item:hover .student-icon {
+        transform: scale(1.1) rotate(-6deg);
+    }
+
+    .btn-blue, .btn-gray {
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-family: "Battambang", "Inter", system-ui;
+        white-space: nowrap;
+        padding: 9px 16px;
+        position: relative;
+        overflow: hidden;
+        transition: transform .18s var(--ease), box-shadow .18s var(--ease), background .2s var(--ease), color .2s var(--ease), filter .2s var(--ease);
+        isolation: isolate;
     }
     .btn-blue {
-        background: #007bff;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         color: white;
-        border: none;
-        padding: 7px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1rem;
-        font-family: "Battambang", system-ui;
-        white-space: nowrap;
+        box-shadow: 0 4px 14px rgba(79,70,229,0.30);
+    }
+    .btn-blue:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(79,70,229,0.40);
+        filter: brightness(1.05);
+    }
+    .btn-blue:active:not(:disabled) {
+        transform: translateY(0) scale(.97);
     }
     .btn-gray {
-        background: #e0e0e0;
-        border: none;
-        padding: 7px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1rem;
-        color: #007bff;
-        font-family: "Battambang", system-ui;
-        white-space: nowrap;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
     }
-    button:hover {
+    .btn-gray:hover:not(:disabled) {
         transform: translateY(-2px);
-        background-color: rgb(19, 80, 54);
-        color: white;
+        background: var(--primary-soft-strong);
+        box-shadow: var(--shadow-sm);
+    }
+    .btn-gray:active:not(:disabled) {
+        transform: translateY(0) scale(.97);
     }
     button:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         transform: none !important;
+        filter: none !important;
     }
     button:disabled:hover {
         transform: none;
     }
     button a {
-        color: #007bff;
+        color: inherit;
         text-decoration: none;
     }
-    button:hover a {
-        color: #f5f6fa;
+
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.55);
+        transform: scale(0);
+        animation: rippleAnim .55s ease-out;
+        pointer-events: none;
+        z-index: 0;
     }
+    .btn-gray .ripple {
+        background: rgba(99,102,241,0.25);
+    }
+    @keyframes rippleAnim {
+        to { transform: scale(2.6); opacity: 0; }
+    }
+
     .score-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 10px;
+        gap: 12px;
     }
     .score-box {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 6px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        padding: 10px;
+        transition: border-color .2s var(--ease), box-shadow .2s var(--ease), transform .2s var(--ease);
+        animation: itemIn .35s var(--ease) both;
+        opacity: 0;
+    }
+    .score-box:hover {
+        border-color: rgba(99,102,241,0.35);
+        box-shadow: var(--shadow-sm);
+    }
+    .score-box label {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+        font-weight: 500;
     }
     input[type="number"], input[type="text"], select {
-        padding: 6px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        padding: 9px 10px;
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius-sm);
         width: 100%;
         box-sizing: border-box;
-        font-family: "Battambang", system-ui;
+        font-family: "Battambang", "Inter", system-ui;
         font-size: 1rem;
+        background: #fff;
+        color: var(--ink);
+        transition: border-color .2s var(--ease), box-shadow .2s var(--ease), transform .15s var(--ease);
+    }
+    input[type="number"]:focus, input[type="text"]:focus, select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px var(--primary-soft);
     }
     input:disabled, select:disabled {
         opacity: 0.5;
@@ -198,53 +341,60 @@
         position: relative;
     }
     .grid-dropdown-content {
-        display: none;
+        display: grid;
         position: absolute;
         top: 100%;
         left: 0;
-        background-color: white;
+        background-color: #fff;
         width: 320px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+        box-shadow: var(--shadow-lg);
         z-index: 100;
-        border-radius: 8px;
+        border-radius: var(--radius-md);
         padding: 10px;
-        border: 1px solid #ddd;
-        margin-top: 5px;
+        border: 1px solid var(--line);
+        margin-top: 8px;
         grid-template-columns: repeat(3, 1fr);
         gap: 6px;
         box-sizing: border-box;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px) scale(0.97);
+        transform-origin: top left;
+        pointer-events: none;
+        transition: opacity .18s var(--ease), transform .18s var(--ease), visibility .18s;
     }
     .grid-dropdown-content.show {
-        display: grid;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
     }
     .grid-choice {
-        padding: 8px 4px;
+        padding: 9px 4px;
         text-align: center;
-        background: #f1f1f1;
-        border-radius: 5px;
+        background: #f4f5fb;
+        border-radius: var(--radius-sm);
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         user-select: none;
         color: #333;
-        transition: background 0.2s, color 0.2s;
+        transition: background .18s var(--ease), color .18s var(--ease), transform .15s var(--ease);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
     .grid-choice:hover {
-        background: #007bff;
+        background: var(--primary);
         color: white;
+        transform: translateY(-1px);
     }
     .grid-choice.active {
-        background: #135036;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         color: white;
         font-weight: bold;
+        box-shadow: 0 3px 10px rgba(79,70,229,0.35);
     }
 
-    .btn-blue, .btn-gray {
-        position: relative;
-        transition: background-color 0.2s, transform 0.15s;
-    }
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
@@ -269,27 +419,28 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        background: white;
-        border-radius: 12px;
-        padding: 12px 20px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-        font-family: "Battambang", system-ui;
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        padding: 13px 22px;
+        box-shadow: var(--shadow-lg);
+        font-family: "Battambang", "Inter", system-ui;
         font-size: 1rem;
         font-weight: bold;
         color: #333;
-        border-left: 5px solid #007bff;
+        border-left: 5px solid var(--primary);
         opacity: 0;
         transform: translateY(-30px) scale(0.9);
-        animation: toastIn 0.35s cubic-bezier(.34,1.56,.64,1) forwards;
+        animation: toastIn 0.4s var(--ease-bounce) forwards;
         max-width: 90vw;
         white-space: nowrap;
     }
     .toast-popup.toast-out {
         animation: toastOut 0.3s ease forwards;
     }
-    .toast-popup.toast-saving { border-left-color: #007bff; }
-    .toast-popup.toast-success { border-left-color: #2ecc71; }
-    .toast-popup.toast-error { border-left-color: #e74c3c; }
+    .toast-popup.toast-saving { border-left-color: var(--primary); }
+    .toast-popup.toast-success { border-left-color: var(--success); }
+    .toast-popup.toast-error { border-left-color: var(--danger); }
 
     @keyframes toastIn {
         0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
@@ -304,8 +455,8 @@
     .status-spinner {
         width: 16px;
         height: 16px;
-        border: 2.5px solid rgba(0,123,255,0.25);
-        border-top-color: #007bff;
+        border: 2.5px solid rgba(99,102,241,0.25);
+        border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
         flex-shrink: 0;
@@ -317,10 +468,10 @@
         width: 18px;
         height: 18px;
         border-radius: 50%;
-        background: #2ecc71;
+        background: var(--success);
         flex-shrink: 0;
         position: relative;
-        animation: pop 0.3s ease;
+        animation: pop 0.3s var(--ease-bounce);
     }
     .status-check::after {
         content: '';
@@ -340,12 +491,12 @@
         width: 18px;
         height: 18px;
         border-radius: 50%;
-        background: #e74c3c;
+        background: var(--danger);
         color: white;
         font-size: 12px;
         font-weight: bold;
         flex-shrink: 0;
-        animation: pop 0.3s ease;
+        animation: pop 0.3s var(--ease-bounce);
     }
     @keyframes pop {
         0% { transform: scale(0.3); opacity: 0; }
@@ -361,13 +512,19 @@
         gap: 12px;
         padding: 40px 0;
         grid-column: 1 / -1;
-        color: #888;
-        font-family: "Battambang", system-ui;
+        color: var(--ink-soft);
+        font-family: "Battambang", "Inter", system-ui;
+        animation: itemIn .3s var(--ease);
     }
     .score-loading .status-spinner {
         width: 28px;
         height: 28px;
         border-width: 3px;
+    }
+
+    /* Panel top / footer accents */
+    .panel-top {
+        background: linear-gradient(180deg, rgba(99,102,241,0.06), rgba(99,102,241,0));
     }
 
     /* --- Mobile Responsive Media Queries --- */
@@ -423,25 +580,36 @@
         .student-list {
             max-height: 480px;
         }
-        
+
         /* Displays 3-column layouts inside centered mobile overlays */
         .grid-dropdown-content {
             position: fixed;
             top: 25% !important;
             left: 50% !important;
-            transform: translate(-50%, -50%) !important;
+            transform: translate(-50%, -46%) scale(0.97) !important;
             width: 90vw;
             max-width: 340px;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-lg);
             border: 1px solid #bbb;
+        }
+        .grid-dropdown-content.show {
+            transform: translate(-50%, -50%) scale(1) !important;
         }
 
         .mobile-hide {
             display: none !important;
         }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+        }
+    }
 </style>
-</head> 
+</head>
 <body>
 
 <div id="toastLayer"></div>
@@ -449,8 +617,8 @@
 <header>
    <!--- <div class="header-row header-main-row">
        <h3 style="margin:0;">ពិន្ទុថ្នាក់ទី៧D</h3> -->
-        
-    </div> 
+
+    </div>
     <span id="saveStatush" style="color:green;font-weight:bold;"></span>
     <select id="monthSelect" style="display: none;">
         <option value="" disabled selected hidden>ជ្រើសរើសខែ</option>
@@ -483,9 +651,9 @@
         </div>
 
        <div class="quick-score-group" style="display: none;">
-            <input type="number" id="quickScore" placeholder="ពិន្ទុ"> 
+            <input type="number" id="quickScore" placeholder="ពិន្ទុ">
             <button class="btn-blue" id="applyQuick">បញ្ចូលរហ័ស</button>
-        </div> 
+        </div>
 
     <div class="header-row header-actions-row">
        <h4 id="selectedStudenth" style="padding: 0px; margin: 0; font-size: 1rem; color: #007bff; display: none;"></h4>
@@ -506,7 +674,7 @@
     </div>
 
     <div class="panel" id="scorePanel" style="display: none;">
-        <div class="panel-top" style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #ddd;">
+        <div class="panel-top" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line);">
             <div style="display:flex; align-items:center; gap:10px;">
                 <button class="btn-gray" id="backBtn" style="padding: 5px 10px;"><i class="fa fa-arrow-left"></i></button>
                 <h4 id="selectedStudent" style="margin:0;">គ្មានឈ្មោះសិស្ស</h4>
@@ -519,11 +687,11 @@
                 <button class="btn-gray" id="nextStudent"><i class="fa fa-chevron-right"></i></button>
             </div>
         </div>
-   
-        <div style="padding: 15px; flex: 1; overflow-y: auto;">
+
+        <div style="padding: 16px; flex: 1; overflow-y: auto;">
             <div id="scoresGrid" class="score-grid"></div>
         </div>
-        <div style="padding: 15px; border-top: 1px solid #ddd;">
+        <div style="padding: 15px; border-top: 1px solid var(--line);">
             <button class="btn-gray" id="resetBtn">សម្អាត</button>
             <span id="saveStatus" style="margin-left:10px;color:green;font-weight:bold;"></span>
         </div>
@@ -546,6 +714,21 @@ let studentNames = [];
 let currentIndex = -1;
 
 const monthSelect = document.getElementById('monthSelect');
+
+// --- Ripple effect for a modern tactile feel on buttons ---
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-blue, .btn-gray');
+    if (!btn || btn.disabled) return;
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    btn.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+});
 
 // --- Saving state helpers (no visual animation, just disable) ---
 function setBtnSaving(btn, isSaving) {
@@ -612,16 +795,28 @@ function clearStatusAnimated() {
     // No-op: popup toasts auto-dismiss themselves.
 }
 
+// Replays entrance animation on a panel by toggling its class after a reflow.
+function replayPanelAnimation(el) {
+    if (!el) return;
+    el.classList.remove('fade-swap');
+    void el.offsetWidth;
+    el.classList.add('fade-swap');
+}
+
 function showScorePanel() {
-    document.getElementById('scorePanel').style.display = 'flex';
+    const scorePanel = document.getElementById('scorePanel');
+    scorePanel.style.display = 'flex';
+    replayPanelAnimation(scorePanel);
     document.getElementById('studentPanel').classList.add('mobile-hide');
     document.querySelector('header').classList.add('mobile-hide');
 }
 
 function hideScorePanel() {
     document.getElementById('scorePanel').style.display = 'none';
-    document.getElementById('studentPanel').classList.remove('mobile-hide');
+    const studentPanel = document.getElementById('studentPanel');
+    studentPanel.classList.remove('mobile-hide');
     document.querySelector('header').classList.remove('mobile-hide');
+    replayPanelAnimation(studentPanel);
 }
 
 document.getElementById('backBtn').onclick = hideScorePanel;
@@ -636,8 +831,13 @@ function loadStudents() {
     }
 
     reloadBtn.disabled = true;
-    reloadBtn.textContent = 'Loading'; 
-    studentListEl.innerHTML = '<div style="padding:10px; color:black; font-size: 1rem">កំពុងទាញឈ្មោះសិស្ស! សូមរង់ចាំ...</div>';
+    reloadBtn.textContent = 'Loading';
+    studentListEl.innerHTML = `
+        <div class="score-loading">
+            <span class="status-spinner"></span>
+            <span>កំពុងទាញឈ្មោះសិស្ស! សូមរង់ចាំ...</span>
+        </div>
+    `;
 
     studentNames = [];
     currentIndex = -1;
@@ -646,11 +846,12 @@ function loadStudents() {
         .then(res => res.json())
         .then(data => {
             studentNames = data;
-            studentListEl.innerHTML = ''; 
+            studentListEl.innerHTML = '';
 
-            data.forEach(name => {
+            data.forEach((name, index) => {
                 let div = document.createElement('div');
                 div.className = 'student-item';
+                div.style.animationDelay = `${Math.min(index * 30, 600)}ms`;
                 div.innerHTML = `
                     <i class="fa-solid fa-clipboard-user student-icon"></i>
                     <span>${name}</span>
@@ -771,9 +972,9 @@ function selectStudent(name) {
     document.getElementById('selectedStudenth').textContent = name;
     document.getElementById('selectedStudent').textContent = name;
     scores = {};
-   
+
     document.getElementById('quickScore').value = '';
-    
+
     showScorePanel();
     showScoreLoading();
     fetch(`${SHEET_API_BASE}?action=getScores&month=${monthSelect.value}&studentName=${encodeURIComponent(name)}`)
@@ -802,9 +1003,10 @@ function showScoreLoading() {
 function renderScores() {
     let grid = document.getElementById('scoresGrid');
     grid.innerHTML = '';
-    SUBJECTS.forEach(sub => {
+    SUBJECTS.forEach((sub, index) => {
         let div = document.createElement('div');
         div.className = 'score-box';
+        div.style.animationDelay = `${Math.min(index * 25, 500)}ms`;
         div.innerHTML = `<label>${sub}</label><input type="number" value="${scores[sub] || ''}">`;
         div.querySelector('input').oninput = e => scores[sub] = e.target.value;
         grid.appendChild(div);
@@ -853,7 +1055,7 @@ document.getElementById('applyQuick').onclick = () => {
     if(!sub) return;
     scores[sub] = val;
     renderScores();
-    saveToSheet(); 
+    saveToSheet();
 };
 
 document.getElementById('saveBtn').onclick = saveToSheet;
@@ -894,42 +1096,42 @@ function setupCustomGridDropdown(selectId, buttonId, dropdownId) {
     const realSelect = document.getElementById(selectId);
     const toggleBtn = document.getElementById(buttonId);
     const gridDropdown = document.getElementById(dropdownId);
-    
+
     gridDropdown.innerHTML = '';
-    
+
     Array.from(realSelect.options).forEach(option => {
         if (option.value === "") return;
-        
+
         const choice = document.createElement('div');
         choice.className = 'grid-choice';
         choice.textContent = option.text;
         choice.setAttribute('data-value', option.value);
-        
+
         if (option.selected) {
             choice.classList.add('active');
             toggleBtn.innerHTML = `${toggleBtn.getAttribute('data-prefix')}: ${option.text} <i class="fa fa-caret-down" style="margin-left:5px;"></i>`;
         }
-        
+
         choice.onclick = (e) => {
             e.stopPropagation();
             realSelect.value = option.value;
-            
+
             gridDropdown.querySelectorAll('.grid-choice').forEach(c => c.classList.remove('active'));
             choice.classList.add('active');
-            
+
             toggleBtn.innerHTML = `${toggleBtn.getAttribute('data-prefix')}: ${option.text} <i class="fa fa-caret-down" style="margin-left:5px;"></i>`;
             gridDropdown.classList.remove('show');
-            
+
             realSelect.dispatchEvent(new Event('change'));
         };
-        
+
         gridDropdown.appendChild(choice);
     });
-    
+
     if (realSelect.value === "") {
         toggleBtn.innerHTML = `${toggleBtn.getAttribute('data-prefix')} <i class="fa fa-caret-down" style="margin-left:5px;"></i>`;
     }
-    
+
     toggleBtn.onclick = (e) => {
         e.stopPropagation();
         document.querySelectorAll('.grid-dropdown-content').forEach(d => {
