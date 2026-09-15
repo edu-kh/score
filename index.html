@@ -114,6 +114,18 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    .student-icon {
+        flex: 0 0 auto;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #d6e9ff;
+        color: #007bff;
+        font-size: 0.75rem;
+    }
     .btn-blue {
         background: #007bff;
         color: white;
@@ -141,6 +153,17 @@
         background-color: rgb(19, 80, 54);
         color: white;
     }
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+    button:disabled:hover {
+        transform: none;
+    }
+    button:disabled.is-saving {
+        opacity: 1;
+    }
     button a {
         color: #007bff;
         text-decoration: none;
@@ -166,6 +189,11 @@
         box-sizing: border-box;
         font-family: "Battambang", system-ui;
         font-size: 1rem;
+    }
+    input:disabled, select:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f0f0f0;
     }
 
     /* --- Custom 3-Column Dropdown Styles --- */
@@ -216,6 +244,164 @@
         font-weight: bold;
     }
 
+    /* --- Saving animation --- */
+    .btn-blue, .btn-gray {
+        position: relative;
+        transition: background-color 0.2s, transform 0.15s;
+    }
+    .btn-blue.is-saving, .btn-gray.is-saving {
+        pointer-events: none;
+        color: transparent !important;
+    }
+    .btn-blue.is-saving *, .btn-gray.is-saving * {
+        visibility: hidden;
+    }
+    .btn-blue.is-saving::after, .btn-gray.is-saving::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
+        border: 2px solid rgba(255,255,255,0.5);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    .btn-gray.is-saving::after {
+        border: 2px solid rgba(0,123,255,0.25);
+        border-top-color: #007bff;
+    }
+    .btn-blue.is-saved, .btn-gray.is-saved {
+        background-color: #2ecc71 !important;
+        color: white !important;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    #saveStatus, #saveStatush {
+        display: none;
+    }
+
+    /* --- Popup toast --- */
+    #toastLayer {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+    }
+    .toast-popup {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        border-radius: 12px;
+        padding: 12px 20px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        font-family: "Battambang", system-ui;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #333;
+        border-left: 5px solid #007bff;
+        opacity: 0;
+        transform: translateY(-30px) scale(0.9);
+        animation: toastIn 0.35s cubic-bezier(.34,1.56,.64,1) forwards;
+        max-width: 90vw;
+        white-space: nowrap;
+    }
+    .toast-popup.toast-out {
+        animation: toastOut 0.3s ease forwards;
+    }
+    .toast-popup.toast-saving { border-left-color: #007bff; }
+    .toast-popup.toast-success { border-left-color: #2ecc71; }
+    .toast-popup.toast-error { border-left-color: #e74c3c; }
+
+    @keyframes toastIn {
+        0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+        60% { opacity: 1; transform: translateY(4px) scale(1.03); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+        0% { opacity: 1; transform: translateY(0) scale(1); }
+        100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
+    }
+
+    .status-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2.5px solid rgba(0,123,255,0.25);
+        border-top-color: #007bff;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        flex-shrink: 0;
+    }
+    .status-check {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #2ecc71;
+        flex-shrink: 0;
+        position: relative;
+        animation: pop 0.3s ease;
+    }
+    .status-check::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 1px;
+        width: 5px;
+        height: 9px;
+        border: solid white;
+        border-width: 0 2.5px 2.5px 0;
+        transform: rotate(45deg);
+    }
+    .status-error-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #e74c3c;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        flex-shrink: 0;
+        animation: pop 0.3s ease;
+    }
+    @keyframes pop {
+        0% { transform: scale(0.3); opacity: 0; }
+        70% { transform: scale(1.15); opacity: 1; }
+        100% { transform: scale(1); }
+    }
+
+    .score-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 40px 0;
+        grid-column: 1 / -1;
+        color: #888;
+        font-family: "Battambang", system-ui;
+    }
+    .score-loading .status-spinner {
+        width: 28px;
+        height: 28px;
+        border-width: 3px;
+    }
+
     /* --- Mobile Responsive Media Queries --- */
     @media (max-width: 768px) {
         header {
@@ -234,8 +420,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        .quick-score-group, .action-buttons-group, .dropdown-container {
+        .quick-score-group, .action-buttons-group {
             width: 100%;
+        }
+        .header-controls-row {
+            flex-direction: row !important;
+        }
+        .header-controls-row .dropdown-container {
+            flex: 1;
+            width: auto;
         }
         .dropdown-container button, .action-buttons-group button {
             width: 100%;
@@ -260,7 +453,7 @@
             max-height: none;
         }
         .student-list {
-            max-height: 350px;
+            max-height: 620px;
         }
         
         /* Displays 3-column layouts inside centered mobile overlays */
@@ -283,12 +476,14 @@
 </head> 
 <body>
 
+<div id="toastLayer"></div>
+
 <header>
-    <div class="header-row header-main-row">
-        <h3 style="margin:0;">ពិន្ទុថ្នាក់ទី៧D</h3>
-        <span id="saveStatush" style="color:green;font-weight:bold;"></span>
-    </div>
-    
+   <!--- <div class="header-row header-main-row">
+       <h3 style="margin:0;">ពិន្ទុថ្នាក់ទី៧D</h3> -->
+        
+    </div> 
+    <span id="saveStatush" style="color:green;font-weight:bold;"></span>
     <select id="monthSelect" style="display: none;">
         <option value="" disabled selected hidden>ជ្រើសរើសខែ</option>
         <option value="វិច្ឆិកា">វិច្ឆិកា</option>
@@ -337,7 +532,7 @@
     <div class="panel" id="studentPanel" style="flex:1;">
         <div class="student-header">
             <input type="text" id="searchName" placeholder="ស្វែងរកឈ្មោះសិស្ស...">
-            <button class="btn-blue" id="reloadBtn">Reload</button>
+            <button class="btn-blue" id="reloadBtn">ពិន្ទុ 7D</button>
         </div>
         <div id="studentList" class="student-list"></div>
     </div>
@@ -384,14 +579,95 @@ let currentIndex = -1;
 
 const monthSelect = document.getElementById('monthSelect');
 
+// --- Saving animation helpers ---
+function setBtnSaving(btn, isSaving) {
+    if (!btn) return;
+    if (isSaving) {
+        btn.classList.remove('is-saved');
+        btn.classList.add('is-saving');
+        btn.disabled = true;
+    } else {
+        btn.classList.remove('is-saving');
+        btn.disabled = false;
+    }
+}
+
+function flashBtnSaved(btn, duration = 900) {
+    if (!btn) return;
+    setBtnSaving(btn, false);
+    btn.classList.add('is-saved');
+    setTimeout(() => btn.classList.remove('is-saved'), duration);
+}
+
+// Disable/enable every button and input on the page during a save operation,
+// so the user can't trigger or edit anything else mid-save.
+let lockedControls = [];
+function lockAllButtons(lock) {
+    if (lock) {
+        lockedControls = Array.from(document.querySelectorAll('button, input, select'))
+            .filter(el => !el.disabled);
+        lockedControls.forEach(el => el.disabled = true);
+    } else {
+        lockedControls.forEach(el => el.disabled = false);
+        lockedControls = [];
+    }
+}
+
+let activeSavingToast = null;
+
+function showToast(mode, text, autoHideMs) {
+    const layer = document.getElementById('toastLayer');
+    if (!layer) return null;
+
+    const toast = document.createElement('div');
+    toast.className = `toast-popup toast-${mode}`;
+
+    let icon = '';
+    if (mode === 'saving') icon = '<span class="status-spinner"></span>';
+    else if (mode === 'success') icon = '<span class="status-check"></span>';
+    else if (mode === 'error') icon = '<span class="status-error-icon">!</span>';
+
+    toast.innerHTML = icon + `<span>${text}</span>`;
+    layer.appendChild(toast);
+
+    function remove() {
+        if (!toast.parentNode) return;
+        toast.classList.add('toast-out');
+        setTimeout(() => toast.remove(), 300);
+    }
+
+    if (autoHideMs) setTimeout(remove, autoHideMs);
+
+    return { el: toast, remove };
+}
+
+// Kept for compatibility with call sites: routes status updates to the popup toast.
+function setStatusAnimated(el, mode, text) {
+    if (activeSavingToast) {
+        activeSavingToast.remove();
+        activeSavingToast = null;
+    }
+    if (mode === 'saving') {
+        activeSavingToast = showToast('saving', text);
+    } else {
+        showToast(mode === 'error' ? 'error' : 'success', text, 1800);
+    }
+}
+
+function clearStatusAnimated() {
+    // No-op: popup toasts auto-dismiss themselves.
+}
+
 function showScorePanel() {
     document.getElementById('scorePanel').style.display = 'flex';
     document.getElementById('studentPanel').classList.add('mobile-hide');
+    document.querySelector('header').classList.add('mobile-hide');
 }
 
 function hideScorePanel() {
     document.getElementById('scorePanel').style.display = 'none';
     document.getElementById('studentPanel').classList.remove('mobile-hide');
+    document.querySelector('header').classList.remove('mobile-hide');
 }
 
 document.getElementById('backBtn').onclick = hideScorePanel;
@@ -422,6 +698,7 @@ function loadStudents() {
                 let div = document.createElement('div');
                 div.className = 'student-item';
                 div.innerHTML = `
+                    <i class="fa-solid fa-clipboard-user student-icon"></i>
                     <span>${name}</span>
                     <input type="number" class="student-score" placeholder="ពិន្ទុ" style="width:60px;">
                     <button class="btn-gray">ជ្រើសរើស</button>
@@ -445,7 +722,7 @@ function loadStudents() {
         })
         .finally(() => {
             reloadBtn.disabled = false;
-            reloadBtn.textContent = 'Reload';
+            reloadBtn.textContent = 'ពិន្ទុ 7D';
         });
 }
 
@@ -462,16 +739,17 @@ document.getElementById('nextStudent').onclick = () => {
 };
 
 async function saveListScoresMerged() {
-    const statusMsg = document.getElementById('saveStatush');
-    statusMsg.style.color = 'blue';
-    statusMsg.textContent = 'កំពុងរក្សាទុក....';
+    const listBtn = document.getElementById('saveListScores');
 
     const selectedSubject = document.getElementById('subjectQuick').value;
     if (!selectedSubject) {
-        statusMsg.style.color = 'red';
-        statusMsg.textContent = '⚠ សូមជ្រើសរើសមុខវិជ្ជា!';
+        setStatusAnimated(null, 'error', '⚠ សូមជ្រើសរើសមុខវិជ្ជា!');
         return;
     }
+
+    lockAllButtons(true);
+    setBtnSaving(listBtn, true);
+    setStatusAnimated(null, 'saving', 'កំពុងរក្សាទុក....');
 
     let allScores = {};
     try {
@@ -480,8 +758,9 @@ async function saveListScoresMerged() {
         allScores = data || {};
     } catch (err) {
         console.error("Failed to fetch all scores", err);
-        statusMsg.style.color = 'red';
-        statusMsg.textContent = '❌ មិនអាចទាញទិន្នន័យបាន!';
+        lockAllButtons(false);
+        setBtnSaving(listBtn, false);
+        setStatusAnimated(null, 'error', '❌ មិនអាចទាញទិន្នន័យបាន!');
         return;
     }
 
@@ -497,8 +776,9 @@ async function saveListScoresMerged() {
     });
 
     if (Object.keys(updatedScores).length === 0) {
-        statusMsg.style.color = 'red';
-        statusMsg.textContent = '⚠ មិនមានពិន្ទុសម្រាប់រក្សាទុក!';
+        lockAllButtons(false);
+        setBtnSaving(listBtn, false);
+        setStatusAnimated(null, 'error', '⚠ មិនមានពិន្ទុសម្រាប់រក្សាទុក!');
         return;
     }
 
@@ -507,16 +787,16 @@ async function saveListScoresMerged() {
             method: 'POST',
             body: JSON.stringify(updatedScores)
         });
-        statusMsg.style.color = 'green';
-        statusMsg.textContent = '✅ រក្សាទុកពិន្ទុរួចរាល់!';
+        flashBtnSaved(listBtn);
+        setStatusAnimated(null, 'success', ' រក្សាទុកពិន្ទុរួចរាល់!');
         document.querySelectorAll('.student-score').forEach(input => input.value = '');
     } catch (err) {
         console.error(err);
-        statusMsg.style.color = 'red';
-        statusMsg.textContent = '❌ ការរក្សាទុកបរាជ័យ!';
+        setBtnSaving(listBtn, false);
+        setStatusAnimated(null, 'error', '❌ ការរក្សាទុកបរាជ័យ!');
+    } finally {
+        lockAllButtons(false);
     }
-
-    setTimeout(() => statusMsg.textContent = '', 2000);
 }
 
 document.getElementById('saveListScores').onclick = saveListScoresMerged;
@@ -539,13 +819,28 @@ function selectStudent(name) {
     document.getElementById('quickScore').value = '';
     
     showScorePanel();
-    renderScores();
+    showScoreLoading();
     fetch(`${SHEET_API_BASE}?action=getScores&month=${monthSelect.value}&studentName=${encodeURIComponent(name)}`)
         .then(res => res.json())
         .then(data => {
             scores = data.scores || {};
             renderScores();
+        })
+        .catch(err => {
+            console.error(err);
+            scores = {};
+            renderScores();
         });
+}
+
+function showScoreLoading() {
+    let grid = document.getElementById('scoresGrid');
+    grid.innerHTML = `
+        <div class="score-loading">
+            <span class="status-spinner"></span>
+            <span>កំពុងដំណើរការ...</span>
+        </div>
+    `;
 }
 
 function renderScores() {
@@ -562,8 +857,6 @@ function renderScores() {
 
 function saveToSheet() {
     const btn = document.getElementById('saveBtn');
-    const statusMsg = document.getElementById('saveStatus');
-    const statusMsgh = document.getElementById('saveStatush');
 
     if (!currentStudent) {
         btn.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
@@ -575,30 +868,29 @@ function saveToSheet() {
         }, 1500);
         return;
     }
-    btn.disabled = true;
-    statusMsg.style.color = 'green';
-    statusMsg.textContent = 'រក្សាទុករួចរាល់';
-    statusMsgh.style.color = 'green';
-    statusMsgh.textContent = 'រក្សាទុករួចរាល់';
 
-    setTimeout(() => {
-        btn.disabled = false;
-        statusMsg.textContent = '';
-        statusMsgh.textContent = '';
-    }, 1500);
     document.getElementById('quickScore').value = '';
-    btn.textContent = 'រក្សាទុក';
+
+    lockAllButtons(true);
+    setBtnSaving(btn, true);
+    setStatusAnimated(null, 'saving', 'កំពុងរក្សាទុក....');
 
     fetch(`${SHEET_API_BASE}?action=saveScores&month=${monthSelect.value}`, {
         method: 'POST',
         body: JSON.stringify({ studentName: currentStudent, scores })
-    }).catch(() => {
+    })
+    .then(() => {
+        flashBtnSaved(btn);
+        setStatusAnimated(null, 'success', 'រក្សាទុករួចរាល់!');
+    })
+    .catch(() => {
         console.error('Save failed');
+        setBtnSaving(btn, false);
+        setStatusAnimated(null, 'error', 'ការរក្សាទុកបរាជ័យ!');
+    })
+    .finally(() => {
+        lockAllButtons(false);
     });
-
-    setTimeout(() => {
-        btn.disabled = false;
-    }, 500);
 }
 
 document.getElementById('applyQuick').onclick = () => {
