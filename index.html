@@ -161,9 +161,6 @@
     button:disabled:hover {
         transform: none;
     }
-    button:disabled.is-saving {
-        opacity: 1;
-    }
     button a {
         color: #007bff;
         text-decoration: none;
@@ -244,38 +241,9 @@
         font-weight: bold;
     }
 
-    /* --- Saving animation --- */
     .btn-blue, .btn-gray {
         position: relative;
         transition: background-color 0.2s, transform 0.15s;
-    }
-    .btn-blue.is-saving, .btn-gray.is-saving {
-        pointer-events: none;
-        color: transparent !important;
-    }
-    .btn-blue.is-saving *, .btn-gray.is-saving * {
-        visibility: hidden;
-    }
-    .btn-blue.is-saving::after, .btn-gray.is-saving::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 16px;
-        height: 16px;
-        margin: -8px 0 0 -8px;
-        border: 2px solid rgba(255,255,255,0.5);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.6s linear infinite;
-    }
-    .btn-gray.is-saving::after {
-        border: 2px solid rgba(0,123,255,0.25);
-        border-top-color: #007bff;
-    }
-    .btn-blue.is-saved, .btn-gray.is-saved {
-        background-color: #2ecc71 !important;
-        color: white !important;
     }
     @keyframes spin {
         to { transform: rotate(360deg); }
@@ -579,24 +547,10 @@ let currentIndex = -1;
 
 const monthSelect = document.getElementById('monthSelect');
 
-// --- Saving animation helpers ---
+// --- Saving state helpers (no visual animation, just disable) ---
 function setBtnSaving(btn, isSaving) {
     if (!btn) return;
-    if (isSaving) {
-        btn.classList.remove('is-saved');
-        btn.classList.add('is-saving');
-        btn.disabled = true;
-    } else {
-        btn.classList.remove('is-saving');
-        btn.disabled = false;
-    }
-}
-
-function flashBtnSaved(btn, duration = 900) {
-    if (!btn) return;
-    setBtnSaving(btn, false);
-    btn.classList.add('is-saved');
-    setTimeout(() => btn.classList.remove('is-saved'), duration);
+    btn.disabled = isSaving;
 }
 
 // Disable/enable every button and input on the page during a save operation,
@@ -741,6 +695,8 @@ document.getElementById('nextStudent').onclick = () => {
 async function saveListScoresMerged() {
     const listBtn = document.getElementById('saveListScores');
 
+    if (listBtn.disabled) return;
+
     const selectedSubject = document.getElementById('subjectQuick').value;
     if (!selectedSubject) {
         setStatusAnimated(null, 'error', '⚠ សូមជ្រើសរើសមុខវិជ្ជា!');
@@ -787,7 +743,7 @@ async function saveListScoresMerged() {
             method: 'POST',
             body: JSON.stringify(updatedScores)
         });
-        flashBtnSaved(listBtn);
+        setBtnSaving(listBtn, false);
         setStatusAnimated(null, 'success', ' រក្សាទុកពិន្ទុរួចរាល់!');
         document.querySelectorAll('.student-score').forEach(input => input.value = '');
     } catch (err) {
@@ -858,14 +814,10 @@ function renderScores() {
 function saveToSheet() {
     const btn = document.getElementById('saveBtn');
 
+    if (btn.disabled) return;
+
     if (!currentStudent) {
-        btn.textContent = 'មិនទាន់ជ្រើសសិស្ស!';
-        btn.style.backgroundColor = '#e74c3c'; 
-         
-        setTimeout(() => {
-            btn.textContent = 'រក្សាទុក';
-            btn.style.backgroundColor = ''; 
-        }, 1500);
+        setStatusAnimated(null, 'error', 'មិនទាន់ជ្រើសសិស្ស!');
         return;
     }
 
@@ -880,7 +832,7 @@ function saveToSheet() {
         body: JSON.stringify({ studentName: currentStudent, scores })
     })
     .then(() => {
-        flashBtnSaved(btn);
+        setBtnSaving(btn, false);
         setStatusAnimated(null, 'success', 'រក្សាទុករួចរាល់!');
     })
     .catch(() => {
@@ -894,6 +846,8 @@ function saveToSheet() {
 }
 
 document.getElementById('applyQuick').onclick = () => {
+    const saveBtnEl = document.getElementById('saveBtn');
+    if (saveBtnEl.disabled) return;
     let sub = document.getElementById('subjectQuick').value;
     let val = document.getElementById('quickScore').value;
     if(!sub) return;
