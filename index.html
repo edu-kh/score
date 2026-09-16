@@ -310,7 +310,7 @@
     }
     .score-box label {
         font-size: 0.85rem;
-        color: var(--ink-soft);
+        color: var(--ink);
         font-weight: 500;
     }
     input[type="number"], input[type="text"], select {
@@ -970,7 +970,11 @@ monthSelect.onchange = () => {
     currentStudent = null;
     scores = {};
     renderScores();
-    hideScorePanel();
+    if (window.innerWidth > 768) {
+        showScorePanel();
+    } else {
+        hideScorePanel();
+    }
 };
 
 function selectStudent(name) {
@@ -1156,6 +1160,11 @@ window.onclick = () => {
 
 loadStudents();
 renderScores();
+
+// On PC-sized screens, open the score panel automatically when the page loads
+if (window.innerWidth > 768) {
+    showScorePanel();
+}
 </script>
 </body>
 </html>
