@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Battambang:wght@400;700&family=Moul&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<title>ពិន្ទុថ្នាក់ទី៧I</title>
+<title>ពិន្ទុថ្នាក់ទី7I</title>
 <style>
     :root {
         --primary: #6366f1;
@@ -313,7 +313,7 @@
         color: var(--ink);
         font-weight: 500;
     }
-    input[type="number"], input[type="text"], select {
+    input[type="number"], input[type="text"], input[type="text"][inputmode], select {
         padding: 9px 10px;
         border: 1.5px solid var(--line);
         border-radius: var(--radius-sm);
@@ -665,7 +665,8 @@
        <h4 id="selectedStudenth" style="padding: 0px; margin: 0; font-size: 1rem; color: #007bff; display: none;"></h4>
         <div class="action-buttons-group">
             <button class="btn-blue" id="saveListScores">រក្សាទុក</button>
-            <button class="btn-gray"><a href="https://edu-kh.github.io/student-attendant/">ស្រង់អវត្តមាន</a></button>
+            <button class="btn-gray"><a href="index.html">ស្រង់អវត្តមាន</a></button>
+              <button class="btn-gray"><a href="result.html">លទ្ធផល</a></button>
         </div>
     </div>
 </header>
@@ -712,6 +713,16 @@ const SUBJECTS = [
     "គណិតវិទ្យា", "រូបវិទ្យា", "គីមីវិទ្យា","ជីវវិទ្យា", "ផែនដីវិទ្យា",
     "អង់គ្លេស", "គេហ", "បារាំង", "កីឡា", "បំណិន", "សុខភាព", "ចិន", "កុំព្យូទ័រ"
 ];
+
+// Converts Khmer digits (០-៩) to 0-9 and keeps only digits and one dot,
+// so scores can be typed with a Khmer keyboard.
+function normalizeScore(str) {
+    let s = String(str).replace(/[\u17E0-\u17E9]/g, ch => String(ch.charCodeAt(0) - 0x17E0));
+    s = s.replace(/[។៕]/g, '.').replace(/[^0-9.]/g, '');
+    const i = s.indexOf('.');
+    if (i !== -1) s = s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '');
+    return s;
+}
 
 let currentStudent = null;
 let scores = {};
@@ -861,8 +872,8 @@ function loadStudents() {
                 div.innerHTML = `
                     <i class="fa-solid fa-clipboard-user student-icon"></i>
                     <span>${name}</span>
-                    <input type="number" class="student-score" placeholder="ពិន្ទុ" style="width:60px;">
-                    <button class="btn-gray">ជ្រើសរើស</button>
+                    <input type="text" inputmode="decimal" autocomplete="off" class="student-score" placeholder="ពិន្ទុ" style="width:60px;">
+                    <button class="btn-gray" title="ជ្រើសរើស" aria-label="ជ្រើសរើស"><i class="fa-solid fa-pen"></i></button>
                 `;
 
                 div.querySelector('button').onclick = () => {
@@ -871,7 +882,24 @@ function loadStudents() {
                 };
 
                 div.querySelector('.student-score').oninput = e => {
+                    e.target.value = normalizeScore(e.target.value);
                     listScores[name] = e.target.value;
+                };
+
+                // Enter moves the cursor to the next visible score box
+                div.querySelector('.student-score').onkeydown = e => {
+                    if (e.key !== 'Enter') return;
+                    e.preventDefault();
+                    let next = div.nextElementSibling;
+                    while (next && (next.style.display === 'none' || !next.querySelector('.student-score'))) {
+                        next = next.nextElementSibling;
+                    }
+                    if (next) {
+                        const input = next.querySelector('.student-score');
+                        input.focus();
+                        input.select();
+                        next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                    }
                 };
 
                 studentListEl.appendChild(div);
@@ -883,7 +911,7 @@ function loadStudents() {
         })
         .finally(() => {
             reloadBtn.disabled = false;
-            reloadBtn.textContent = 'ពិន្ទុ 7D';
+            reloadBtn.textContent = 'ពិន្ទុ 7I';
         });
 }
 
@@ -1017,8 +1045,11 @@ function renderScores() {
         let div = document.createElement('div');
         div.className = 'score-box';
         div.style.animationDelay = `${Math.min(index * 25, 500)}ms`;
-        div.innerHTML = `<label>${sub}</label><input type="number" value="${scores[sub] || ''}">`;
-        div.querySelector('input').oninput = e => scores[sub] = e.target.value;
+        div.innerHTML = `<label>${sub}</label><input type="text" inputmode="decimal" autocomplete="off" value="${scores[sub] || ''}">`;
+        div.querySelector('input').oninput = e => {
+            e.target.value = normalizeScore(e.target.value);
+            scores[sub] = e.target.value;
+        };
         grid.appendChild(div);
     });
 }
