@@ -485,13 +485,13 @@
     { en: 'January', km: 'មករា' },
     { en: 'February', km: 'កុម្ភៈ' },
     { en: 'March', km: 'មីនា' },
-    { en: '', km: 'ក្នុងឆ១' },
-    {en: '', km: 'ឆ១' },
+    { en: '', km: 'ខែក្នុងឆ១' },
+    {en: '', km: 'ឆមាស១' },
     { en: 'May', km: 'ឧសភា' },
     { en: 'June', km: 'មិថុនា' },
-    { en: 'July', km: 'ក្នុងឆ២' },
-    { en: '', km: 'ឆ២' },
-    { en: '', km: 'ប្រចាំឆ្នាំ' }
+    { en: 'July', km: 'ខែក្នុងឆ២' },
+    { en: 'S2', km: 'ឆមាស២' },
+    { en: 'Year', km: 'ប្រចាំឆ្នាំ' }
   ];
 
   function initDropdowns() {
@@ -501,7 +501,7 @@
       const pdfItem = document.createElement('button');
       pdfItem.type = 'button';
       pdfItem.className = 'dropdown-item';
-      pdfItem.innerHTML = `<span>ខែ${m.km}</span><span class="en-month">${m.en}</span>`;
+      pdfItem.innerHTML = `<span>${m.km}</span><span class="en-month">${m.en}</span>`;
       pdfItem.onclick = () => handleExport('pdf', m);
       pdfMenu.appendChild(pdfItem);
     });
